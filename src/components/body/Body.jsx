@@ -1,53 +1,59 @@
-import React, { useEffect, useState } from 'react'
-import Loading from '../loading/Loading'
+import React, { useEffect, useState } from "react";
+import Loading from "../loading/Loading";
 import { FaRegStar } from "react-icons/fa";
-import { request } from '../../api';
-import Modal from './modal.jsx'
+import { request } from "../../api";
+import Modal from "./modal.jsx";
 
 const Body = () => {
-    const limit = 5;
-    const [products, setProducts] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [count, setCount] = useState(0)
-    const [total, setTotal] = useState(0)
-    const [categories, setCategories] = useState(null)
-    const [oneItem, setOneItem] = useState(null)
-    useEffect(()=> {
-      request
-            .get("products/category-list")
-            .then(res => {
-              console.log(res.data)
-              setCategories(["all", ...res.data])
-            })
-    }, [])
+  const limit = 5;
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [count, setCount] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [categories, setCategories] = useState(null);
+  const [oneItem, setOneItem] = useState(null);
 
-    useEffect(()=> {
-        setLoading(true)
-        request
-          .get("/products/category/laptops", {
-            params: {
-              limit,
-              skip: count * limit,
-            },
-          })
-          .then((res) => {setProducts([...products, ...res.data.products])
-            setTotal(res.data.total)
-          })
-          .catch((err) => console.log(err))
-          .finally(() => setLoading(false));
-    }, [count])
-  return (
+  
+  useEffect(() => {
+    request.get("products/category-list").then((res) => {
+      console.log(res.data);
+      setCategories(["all", ...res.data]);
+    });
+  }, []);
+
+  
+  useEffect(() => {
+    setLoading(true);
+    request
+      .get("/products/category/smartphones", {
+        params: {
+          limit,
+          skip: count * limit,
+        },
+      })
+      .then((res) => {
+        setProducts([...products, ...res.data.products]);
+        setTotal(res.data.total);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => setLoading(false));
+  }, [count]);
+  return ( 
     <div className="mt-10">
+
+      
       <div className="flex container mx-auto py-5 overflow-auto gap-5">
         {categories?.map((item) => (
           <div
-            className="whitespace-nowrap py-1 px-4 bg-slate-200 rounded-md cursor-pointer select-none hover:bg-slate-400 duration-300"
+            className="whitespace-nowrap py-1 px-4 bg-[#818283] text-white rounded-md cursor-pointer select-none hover:bg-[#57595b] duration-300"
             key={item}
           >
             {item}
           </div>
         ))}
       </div>
+
+
       <div className="container mx-auto grid grid-cols-5 gap-5">
         {products?.map((product) => (
           <div
@@ -79,7 +85,7 @@ const Body = () => {
 
       {total > limit * (count + 1) && (
         <button
-          className="block mx-auto mt-4"
+          className="block mx-auto mt-4 bg-[#186FD4] p-2 rounded-md text-white"
           onClick={() => setCount(count + 1)}
         >
           See more
@@ -89,6 +95,6 @@ const Body = () => {
       {oneItem && <Modal oneItem={oneItem} setOneItem={setOneItem} />}
     </div>
   );
-}
+};
 
-export default Body
+export default Body;
